@@ -1,0 +1,44 @@
+/*Define a class to style container */
+.container {
+    display: flex;
+    width: 960px;
+    height: 960px;
+    
+    opacity: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap
+}
+/*Define a class to style the answer field */
+.block {
+    display: block;
+    background-color: black;
+}
+/*Define a class to style numpad */
+.numpad {
+    border-color: red;
+}
+
+/*Define a class to style operators */
+.operator {
+   flex-shrink: 0;
+    background-color: rgb(231, 120, 16);
+    border-radius: 5px;
+    color: white;
+    width: 240px;
+    height: 240px;
+    text-align: center;
+    justify-content: center;
+}
+
+
+/*Define a class to style digit buttons */
+.digit {
+    flex-shrink: 0;
+    background-color: slategray;
+    border-radius: 5px;
+    color: white;
+    width: 240px;
+    height: 240px;
+    text-align: center;
+    justify-content: center;
+}
