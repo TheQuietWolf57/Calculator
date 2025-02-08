@@ -8,6 +8,7 @@ body {
     height: 780px;
     opacity: 100%;
     flex-wrap: wrap;
+    flex-shrink: 1;
     padding: 15px;
     margin: 0;
     background-color: black;
@@ -15,15 +16,14 @@ body {
 }
 /*Define a class to style the answer field */
 .block {
-    display: block;
-    direction: rtl;
+    display: flex;
     background-color: black;
     color: white;
     height: 180px;
     width: 480px;
     font-size: 180px;
     padding: 5px;
-    
+    justify-content: end;
 }
 /*Define a class to style numpad */
 .numpad {
