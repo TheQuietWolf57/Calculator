@@ -28,6 +28,9 @@ container.appendChild(sideOperator);
 let num1 = "";
 let num2 = "";
 let op = null;
+let answer = "";
+
+updateDisp("0");
 
 // Define each button with the appropriate symbol
 const numbers = ["7", "8", "9", "4", "5", "6", "1", "2", "3", ".", "0", "="];
@@ -37,7 +40,6 @@ for(symbol in numbers) {
     num.classList.add("digit");
     numpad.appendChild(num);
 }
-
 
 const side = ["/","x","-","+"];
 for(operator in side) {
@@ -60,8 +62,6 @@ for(operator in topOp) {
     });
     topOperator.appendChild(symbol);
 }
-
-//ans.append(num1);
 
 //Create functions for each operator
 function add(x, y) {
@@ -96,29 +96,60 @@ function mult(x, y) {
 const buttons = document.querySelectorAll("button");
 console.log(buttons);
 buttons.forEach(button => {
+    //Create eventListener for numbers
     if(isInt(button)) {
         button.addEventListener("click", () => {
-            console.log(button.textContent);
-            ans.append(button.textContent);
-            n = assignNum(button);
-           
+            if(ans.textContent === "ERROR" || ans.textContent === "0" || answer !== "") {
+                updateDisp(button.textContent);
+                num1 = "";
+                answer = "";
+                assignNum(button);
+            } else { 
+                ans.append(button.textContent);
+                assignNum(button);
+            }
         });
-    } else if (isOp(button)) {
+    } 
+    //Create eventListener for operators 
+    else if (isOp(button)) {
         button.addEventListener("click", () => {
-            console.log(button.textContent);
-            o = assignOp(button);
-            ans.append(o);
+            if(num2 === "") {
+                if(ans.textContent === "ERROR") {
+                    updateDisp(button.textContent);
+                    assignOp(button);
+                } else if(answer !== "") {
+                    num1 = answer;
+                    answer = "";
+                    ans.append(button.textContent);
+                    assignOp(button);
+                } else {
+                    ans.append(button.textContent);
+                    assignOp(button);
+                }
+            } else {
+                runCalc();
+                num1 = answer;
+                answer = "";
+                ans.append(button.textContent);
+                assignOp(button);
+            }
         });
-    } else if(button.textContent == "=") {
+    } 
+    //Create eventListener for equal sign
+    else if(button.textContent == "=") {
         button.addEventListener("click", () => {
-            ans.textContent = "";
-            operate(num1, num2, op);
-            num2 = "";
-            return num1;
+            if(answer != "") {
+                return answer;
+            } else {
+            runCalc();
+            }
         });
-    } else {
+    } 
+    //Create eventListener for clear button
+    else {
         button.addEventListener("click", () => {
             clear();
+            ans.textContent = "";
         });
     }
 });
@@ -137,19 +168,16 @@ function isOp(obj) {
 function clear() {
     num1 = "";
     num2 = "";
+    answer = "";
     op = null;
-    ans.textContent = "";
-    console.log("CLEAR");
 }
 //Create function to assign a number to num1 or num2
 function assignNum(input) {
     if(op == null) {
         num1 += input.textContent;
-        console.log("ASSIGN NUM1 = " + num1);
         return num1;
     } else {
         num2 += input.textContent;
-        console.log("ASSIGN NUM2 = " + num2);
         return num2;
     }
 }
@@ -157,44 +185,54 @@ function assignNum(input) {
 //Create a function to assign a value to op
 function assignOp(input) {
     op = input.textContent;
-    console.log("ASSIGN OP = " + op);
-    console.log("ASSIGN NUM1 = " + num1);
     return op;
 }
 
 //Calculate user input
 function operate(num1, num2, op) {
     num1 = Number(num1);
-    console.log("ON OPERATE NUM1 = " + num1);
     num2 = Number(num2);
-    console.log("ON OPERATE NUM2 = " + num2);
     if (op === "+") {
         solution = add(num1, num2);
-        console.log(solution);
-        num1 = solution;
-        ans.append(num1);
-        console.log(num1);
-        return num1;
+        return solution;
     } else if (op === "-") {
         solution = sub(num1, num2);
-        console.log(solution);
-        num1 = solution;
-        ans.append(num1);
-        return num1;
+        return solution;
     } else if (op === "x") {
         solution = mult(num1, num2);
-        console.log(solution);
-        num1 = solution;
-        ans.append(num1);
-        return num1;
-    } else if (op === "/") {
+        return solution;
+    } else if (op === "/" && num2 !== 0) {
         solution = div(num1, num2);
-        console.log(solution);
-        num1 = solution;
-        ans.append(num1);
+        return solution;
+    } else if (op === null) {
         return num1;
     } else {
-        console.log("INVALID");
+        return "ERROR";
     }
 }
 
+//Create helper function to update display
+function updateDisp(string) {
+    ans.textContent = ""
+    ans.append(string);
+}
+
+//Create function to handle and display user input
+function runCalc() {
+    answer = operate(num1, num2, op);
+            if(answer === "ERROR") {
+                updateDisp(answer);
+                clear();
+            } else if(!Number.isInteger(answer)) {
+                answer = answer.toFixed(4);
+                updateDisp(answer);
+                //num1 = answer;
+                num2 = "";
+                op = null;
+            } else {
+                updateDisp(answer);
+                //num1 = answer;
+                num2 = "";
+                op = null;
+            }
+}
