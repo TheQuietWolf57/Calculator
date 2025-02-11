@@ -29,6 +29,7 @@ let num1 = "";
 let num2 = "";
 let op = null;
 let answer = "";
+let decPoint = false;
 
 updateDisp("0");
 
@@ -46,20 +47,14 @@ for(operator in side) {
     symbol = document.createElement("button");
     symbol.textContent = side[operator];
     symbol.classList.add("operator");
-    symbol.addEventListener("click", () => {
-        
-    });
     sideOperator.appendChild(symbol);
 }
 
-const topOp = ["AC", "(", ")", "%"];
+const topOp = ["AC", "<=", ")", "%"];
 for(operator in topOp) {
     symbol = document.createElement("button");
     symbol.textContent = topOp[operator];
     symbol.classList.add("operator");
-    symbol.addEventListener("click", () => {
-        
-    });
     topOperator.appendChild(symbol);
 }
 
@@ -88,8 +83,6 @@ function mult(x, y) {
     return prod;
 }
 
-//function perc();
-
 //Take and assign user input
 
 //Assign eventListeners to all buttons on the calculator
@@ -105,7 +98,7 @@ buttons.forEach(button => {
                 answer = "";
                 assignNum(button);
             } else { 
-                ans.append(button.textContent);
+                ans.textContent += (button.textContent);
                 assignNum(button);
             }
         });
@@ -117,21 +110,25 @@ buttons.forEach(button => {
                 if(ans.textContent === "ERROR") {
                     updateDisp(button.textContent);
                     assignOp(button);
+                    decPoint = false;
                 } else if(answer !== "") {
                     num1 = answer;
                     answer = "";
-                    ans.append(button.textContent);
+                    ans.textContent +=(button.textContent);
+                    decPoint = false;
                     assignOp(button);
                 } else {
-                    ans.append(button.textContent);
+                    ans.textContent +=(button.textContent);
+                    decPoint = false;
                     assignOp(button);
                 }
             } else {
                 runCalc();
                 num1 = answer;
                 answer = "";
-                ans.append(button.textContent);
+                ans.textContent += (button.textContent);
                 assignOp(button);
+                decPoint = false;
             }
         });
     } 
@@ -142,9 +139,57 @@ buttons.forEach(button => {
                 return answer;
             } else {
             runCalc();
+            decPoint = false;
             }
         });
     } 
+    // Create an eventListener for the decimal point button
+    else if(button.textContent == ".") {
+        button.addEventListener("click", () => {
+            if(answer !== "") {
+                updateDisp("0.");
+                num1 = "0.";
+                answer = "";
+                decPoint = true;
+            } else if(op == null && decPoint == false) {
+                if(num1 === "") {
+                    num1 += "0."
+                    ans.textContent += "0.";
+                    decPoint = true;
+                } else {
+                    num1 += ".";
+                    ans.textContent += ".";
+                    decPoint = true;
+                }
+            } else if(op !== null && decPoint == false) {
+                if(num2 === "") {
+                    num2 += "0."
+                    ans.textContent += "0.";
+                    decPoint = true;
+                } else {
+                    num2 += ".";
+                    ans.textContent += ".";
+                    decPoint = true;
+                }
+            }
+        });
+    }
+    //Create an eventListener for the backspace button
+    else if(button.textContent == "<=") {
+        button.addEventListener("click", () => {
+            ans.textContent = ans.textContent.slice(0,-1);
+            if(answer !== "") {
+                clear();
+                ans.textContent = "";
+            } else if (op == null && num1 !== "") {
+                num1 = num1.slice(0,-1);
+            } else if (op !== null && num2 == "") {
+                op = null;
+            } else if (op !== null && num2 !== "") {
+                num2 = num2.slice(0,-1);
+            }
+        });
+    }
     //Create eventListener for clear button
     else {
         button.addEventListener("click", () => {
@@ -170,6 +215,7 @@ function clear() {
     num2 = "";
     answer = "";
     op = null;
+    decPoint = false;
 }
 //Create function to assign a number to num1 or num2
 function assignNum(input) {
@@ -214,7 +260,7 @@ function operate(num1, num2, op) {
 //Create helper function to update display
 function updateDisp(string) {
     ans.textContent = ""
-    ans.append(string);
+    ans.textContent += (string);
 }
 
 //Create function to handle and display user input
@@ -224,14 +270,13 @@ function runCalc() {
                 updateDisp(answer);
                 clear();
             } else if(!Number.isInteger(answer)) {
-                answer = answer.toFixed(4);
+                answer = answer.toFixed(6);
+                answer = parseFloat(answer);
                 updateDisp(answer);
-                //num1 = answer;
                 num2 = "";
                 op = null;
             } else {
                 updateDisp(answer);
-                //num1 = answer;
                 num2 = "";
                 op = null;
             }

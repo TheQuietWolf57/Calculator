@@ -5,25 +5,26 @@ body {
 .container {
     display: flex;
     width: 480px;
-    height: 780px;
+    height: 720px;
     opacity: 100%;
     flex-wrap: wrap;
-    flex-shrink: 1;
     padding: 15px;
     margin: 0;
     background-color: black;
     justify-content: center;
+    border-radius: 10px;
 }
 /*Define a class to style the answer field */
 .block {
     display: flex;
     background-color: black;
     color: white;
-    height: 180px;
+    height: 120px;
     width: 480px;
-    font-size: 180px;
+    font-size: 90px;
     padding: 5px;
     justify-content: end;
+    align-items: end;
 }
 /*Define a class to style numpad */
 .numpad {
